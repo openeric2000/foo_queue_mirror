@@ -1,9 +1,10 @@
 #include "stdafx.h"
+#include "config.h"
 #include <functional>
 
 DECLARE_COMPONENT_VERSION("Queue Playlist", "1.0.0",
 	"Mirrors the playback queue into a regular playlist that you create yourself.\n"
-	"Enter the playlist name in Preferences > Advanced > Playback > \"Queue playlist name\".\n"
+	"Enter the playlist name in Preferences > Tools > Queue Playlist.\n"
 	"One-way sync (queue -> playlist); edits made in the playlist are not written back to the queue.");
 
 VALIDATE_COMPONENT_FILENAME("foo_queue_playlist.dll");
@@ -11,12 +12,6 @@ VALIDATE_COMPONENT_FILENAME("foo_queue_playlist.dll");
 FOOBAR2000_IMPLEMENT_CFG_VAR_DOWNGRADE;
 
 namespace {
-	// {5C0B7A53-6E0B-4B6E-9F0D-3B1E6F2F7A41}
-	static const GUID guid_name_entry = { 0x5c0b7a53, 0x6e0b, 0x4b6e, { 0x9f, 0x0d, 0x3b, 0x1e, 0x6f, 0x2f, 0x7a, 0x41 } };
-
-	// 不給預設值，使用者自己決定要對應哪個清單
-	advconfig_string_factory g_cfgName("Queue playlist name (leave empty to disable)", "queue_playlist.name", guid_name_entry, advconfig_entry::guid_branch_playback, 0, "");
-
 	bool g_syncing = false;
 	bool g_pending = false;
 
@@ -30,7 +25,7 @@ namespace {
 
 	void syncNow() {
 		if (g_syncing) return;
-		pfc::string8 name = g_cfgName.get();
+		pfc::string8 name = qpl::cfgPlaylistName.get();
 		if (name.is_empty()) return;
 
 		auto pm = playlist_manager::get();
@@ -89,3 +84,5 @@ namespace {
 	};
 	FB2K_SERVICE_FACTORY(lifecycle);
 }
+
+void qpl::requestSync() { scheduleSync(); }

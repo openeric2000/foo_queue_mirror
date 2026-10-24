@@ -1,0 +1,14 @@
+#include "resource.h"
+#include "winres.h"
+
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+IDD_PREFERENCES DIALOGEX 0, 0, 332, 120
+STYLE DS_SETFONT | WS_CHILD
+FONT 8, "Microsoft Sans Serif", 400, 0, 0x0
+BEGIN
+    GROUPBOX        "Queue playlist name",IDC_STATIC,7,7,318,50
+    EDITTEXT        IDC_PLAYLIST_NAME,14,20,304,14,ES_AUTOHSCROLL
+    LTEXT           "Leave empty to disable.",IDC_STATIC,14,40,304,8
+    LTEXT           "Type a playlist name here, then create a playlist with the same name. That playlist will mirror the playback queue.",IDC_STATIC,7,66,318,24
+END

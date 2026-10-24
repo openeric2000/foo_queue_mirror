@@ -6,7 +6,7 @@ A tiny foobar2000 (v2, x64) component that mirrors the playback queue into a reg
 
 1. Install the `.fb2k-component` and restart foobar2000.
 2. Create a normal playlist (any name, e.g. `Queue`).
-3. Go to **Preferences > Advanced > Playback** and enter the same name in **Queue playlist name**. Empty = disabled.
+3. Go to **Preferences > Tools > Queue Playlist** and enter the same name. Empty = disabled.
 
 The playlist now follows the queue automatically.
 
@@ -34,7 +34,7 @@ MIT. The foobar2000 SDK has its own license.
 
 1. 安裝 `.fb2k-component` 後重啟 foobar2000。
 2. 自行新增一個一般播放清單（名稱自訂，例如 `Queue`）。
-3. 到 **Preferences > Advanced > Playback**，在 **Queue playlist name** 填入相同名稱。留空即停用。
+3. 到 **Preferences > Tools > Queue Playlist**，填入相同名稱。留空即停用。
 
 之後這個清單會自動跟著佇列變動。
 
