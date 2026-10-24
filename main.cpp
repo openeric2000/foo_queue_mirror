@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "config.h"
 #include <functional>
+#include <vector>
 
 DECLARE_COMPONENT_VERSION("Queue Mirror", "1.1.0",
 	"Mirrors the playback queue into a regular playlist that you create yourself.\n"
@@ -81,12 +82,26 @@ namespace {
 			auto pm = playlist_manager::get();
 			if (playlist != pm->find_playlist(name.c_str())) return;
 
-			// 清單與佇列不一致時位置無法對應，改用佇列重新同步，避免誤刪
-			if (pm->queue_get_count() != oldCount) {
-				scheduleSync();
-				return;
+			// callback 內不能直接動佇列，先記下要移除的位置，延後到主執行緒下一輪處理
+			std::vector<size_t> removed;
+			for (size_t i = 0; i < oldCount; ++i) {
+				if (mask[i]) removed.push_back(i);
 			}
-			pm->queue_remove_mask(mask);
+			if (removed.empty()) return;
+
+			fb2k::inMainThread([removed, oldCount] {
+				auto pm = playlist_manager::get();
+				// 清單與佇列不一致時位置無法對應，改用佇列重新同步，避免誤刪
+				if (pm->queue_get_count() != oldCount) {
+					FB2K_console_formatter() << "Queue Mirror: queue size changed, resyncing instead of removing";
+					scheduleSync();
+					return;
+				}
+				pfc::bit_array_bittable mask(oldCount);
+				for (size_t i : removed) mask.set(i, true);
+				pm->queue_remove_mask(mask);
+				FB2K_console_formatter() << "Queue Mirror: removed " << (uint32_t)removed.size() << " item(s) from the queue";
+			});
 		}
 	};
 
