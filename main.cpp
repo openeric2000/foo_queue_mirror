@@ -2,10 +2,11 @@
 #include "config.h"
 #include <functional>
 
-DECLARE_COMPONENT_VERSION("Queue Mirror", "1.0.0",
+DECLARE_COMPONENT_VERSION("Queue Mirror", "1.1.0",
 	"Mirrors the playback queue into a regular playlist that you create yourself.\n"
 	"Enter the playlist name in Preferences > Tools > Queue Mirror.\n"
-	"One-way sync (queue -> playlist); edits made in the playlist are not written back to the queue.");
+	"Sync is queue -> playlist. Deleting items in the playlist also removes them from the queue;\n"
+	"other edits (reorder, add) are not written back and will be reverted on the next sync.");
 
 VALIDATE_COMPONENT_FILENAME("foo_queue_mirror.dll");
 
@@ -67,9 +68,26 @@ namespace {
 	// 使用者建立或改名清單時也要同步，才不必等到下一次佇列變動
 	class pl_watch : public playlist_callback_impl_base {
 	public:
-		pl_watch() : playlist_callback_impl_base(flag_on_playlist_created | flag_on_playlist_renamed) {}
+		pl_watch() : playlist_callback_impl_base(flag_on_playlist_created | flag_on_playlist_renamed | flag_on_items_removing) {}
 		void on_playlist_created(t_size, const char*, t_size) override { scheduleSync(); }
 		void on_playlist_renamed(t_size, const char*, t_size) override { scheduleSync(); }
+
+		// 使用者在映射清單中刪除曲目時，同步從真正的佇列移除
+		void on_items_removing(t_size playlist, const bit_array& mask, t_size oldCount, t_size) override {
+			if (g_syncing) return;
+			pfc::string8 name = qpl::cfgPlaylistName.get();
+			if (name.is_empty()) return;
+
+			auto pm = playlist_manager::get();
+			if (playlist != pm->find_playlist(name.c_str())) return;
+
+			// 清單與佇列不一致時位置無法對應，改用佇列重新同步，避免誤刪
+			if (pm->queue_get_count() != oldCount) {
+				scheduleSync();
+				return;
+			}
+			pm->queue_remove_mask(mask);
+		}
 	};
 
 	class lifecycle : public initquit {

@@ -12,7 +12,7 @@ The playlist now follows the queue automatically.
 
 ## Notes
 
-- One-way sync (queue -> playlist). Edits in the playlist are not written back to the queue.
+- Sync is queue -> playlist. Deleting items in the playlist also removes them from the queue. Other edits (reorder, add) are not written back and are reverted on the next sync.
 - Locked playlists are skipped.
 - x64 only.
 
@@ -40,7 +40,7 @@ MIT. The foobar2000 SDK has its own license.
 
 ## 注意事項
 
-- 單向同步（佇列 → 清單），在清單上的編輯不會回寫佇列。
+- 同步方向為佇列 → 清單。在清單中刪除曲目時，也會同步從佇列移除；其他編輯（重排、加入）不會回寫，並會在下次同步時還原。
 - 被鎖定的清單會略過。
 - 僅支援 x64。
 
