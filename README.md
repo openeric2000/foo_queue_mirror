@@ -2,12 +2,6 @@
 
 A tiny foobar2000 (v2, x64) component that mirrors the playback queue into a regular playlist, so you can see what is queued as a tab next to your other playlists.
 
-## Requirements
-
-- [foobar2000](https://www.foobar2000.org/) v2.x, 64-bit (Windows)
-- No other component is required.
-- Optional: [Queue Viewer](https://marc2k3.github.io/component/queue-viewer/) for editing the queue itself (this component is one-way).
-
 ## Usage
 
 1. Install the `.fb2k-component` and restart foobar2000.
@@ -35,12 +29,6 @@ MIT. The foobar2000 SDK has its own license.
 # foo_queue_playlist（中文）
 
 極輕量的 foobar2000（v2、x64）元件，把播放佇列（queue）即時映射到一般播放清單，讓你在播放清單 tab 列就能看到目前佇列內容。
-
-## 前置需求
-
-- [foobar2000](https://www.foobar2000.org/) v2.x 64 位元（Windows）
-- 不需要安裝其他元件。
-- 選用：[Queue Viewer](https://marc2k3.github.io/component/queue-viewer/)，用來直接編輯佇列本身（本元件是單向映射）。
 
 ## 使用方式
 
