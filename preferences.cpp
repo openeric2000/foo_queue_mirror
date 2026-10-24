@@ -59,7 +59,7 @@ namespace {
 
 	class preferences_page_queue : public preferences_page_impl<CPreferences> {
 	public:
-		const char* get_name() override { return "Queue Playlist"; }
+		const char* get_name() override { return "Queue Mirror"; }
 		GUID get_guid() override {
 			// {2E6F1C83-9B47-4A0D-8C35-71D2E5B8F960}
 			return GUID{ 0x2e6f1c83, 0x9b47, 0x4a0d, { 0x8c, 0x35, 0x71, 0xd2, 0xe5, 0xb8, 0xf9, 0x60 } };

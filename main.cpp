@@ -2,12 +2,12 @@
 #include "config.h"
 #include <functional>
 
-DECLARE_COMPONENT_VERSION("Queue Playlist", "1.0.0",
+DECLARE_COMPONENT_VERSION("Queue Mirror", "1.0.0",
 	"Mirrors the playback queue into a regular playlist that you create yourself.\n"
-	"Enter the playlist name in Preferences > Tools > Queue Playlist.\n"
+	"Enter the playlist name in Preferences > Tools > Queue Mirror.\n"
 	"One-way sync (queue -> playlist); edits made in the playlist are not written back to the queue.");
 
-VALIDATE_COMPONENT_FILENAME("foo_queue_playlist.dll");
+VALIDATE_COMPONENT_FILENAME("foo_queue_mirror.dll");
 
 FOOBAR2000_IMPLEMENT_CFG_VAR_DOWNGRADE;
 

@@ -1,4 +1,4 @@
-# foo_queue_playlist
+# foo_queue_mirror
 
 A tiny foobar2000 (v2, x64) component that mirrors the playback queue into a regular playlist, so you can see what is queued as a tab next to your other playlists.
 
@@ -6,7 +6,7 @@ A tiny foobar2000 (v2, x64) component that mirrors the playback queue into a reg
 
 1. Install the `.fb2k-component` and restart foobar2000.
 2. Create a normal playlist (any name, e.g. `Queue`).
-3. Go to **Preferences > Tools > Queue Playlist** and enter the same name. Empty = disabled.
+3. Go to **Preferences > Tools > Queue Mirror** and enter the same name. Empty = disabled.
 
 The playlist now follows the queue automatically.
 
@@ -26,7 +26,7 @@ MIT. The foobar2000 SDK has its own license.
 
 ---
 
-# foo_queue_playlist（中文）
+# foo_queue_mirror（中文）
 
 極輕量的 foobar2000（v2、x64）元件，把播放佇列（queue）即時映射到一般播放清單，讓你在播放清單 tab 列就能看到目前佇列內容。
 
@@ -34,7 +34,7 @@ MIT. The foobar2000 SDK has its own license.
 
 1. 安裝 `.fb2k-component` 後重啟 foobar2000。
 2. 自行新增一個一般播放清單（名稱自訂，例如 `Queue`）。
-3. 到 **Preferences > Tools > Queue Playlist**，填入相同名稱。留空即停用。
+3. 到 **Preferences > Tools > Queue Mirror**，填入相同名稱。留空即停用。
 
 之後這個清單會自動跟著佇列變動。
 
