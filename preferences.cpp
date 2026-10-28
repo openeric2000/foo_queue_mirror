@@ -7,8 +7,9 @@
 namespace qpl {
 	// {7B2E9A14-3D5C-4E8F-A6B1-0C4D8E2F9A53}
 	static constexpr GUID guid_cfg_name = { 0x7b2e9a14, 0x3d5c, 0x4e8f, { 0xa6, 0xb1, 0x0c, 0x4d, 0x8e, 0x2f, 0x9a, 0x53 } };
-	// 不給預設值，由使用者自行決定要對應哪個清單
-	cfg_string cfgPlaylistName(guid_cfg_name, "");
+	// 預設對應名為「佇列清單」的清單（配合 fb2k 現代主題）；沒有同名清單時不會有任何動作，清空即停用
+	static constexpr const char* default_playlist_name = "佇列清單";
+	cfg_string cfgPlaylistName(guid_cfg_name, default_playlist_name);
 }
 
 namespace {
@@ -29,7 +30,7 @@ namespace {
 			m_callback->on_state_changed();
 		}
 		void reset() override {
-			uSetDlgItemText(*this, IDC_PLAYLIST_NAME, "");
+			uSetDlgItemText(*this, IDC_PLAYLIST_NAME, qpl::default_playlist_name);
 			m_callback->on_state_changed();
 		}
 
