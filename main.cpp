@@ -3,7 +3,7 @@
 #include <functional>
 #include <vector>
 
-DECLARE_COMPONENT_VERSION("Queue Mirror", "1.1.0",
+DECLARE_COMPONENT_VERSION("Queue Mirror", "1.2.0",
 	"Mirrors the playback queue into a regular playlist that you create yourself.\n"
 	"Enter the playlist name in Preferences > Tools > Queue Mirror.\n"
 	"Sync is queue -> playlist. Deleting items in the playlist also removes them from the queue;\n"
