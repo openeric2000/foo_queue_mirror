@@ -7,9 +7,21 @@
 namespace qpl {
 	// {7B2E9A14-3D5C-4E8F-A6B1-0C4D8E2F9A53}
 	static constexpr GUID guid_cfg_name = { 0x7b2e9a14, 0x3d5c, 0x4e8f, { 0xa6, 0xb1, 0x0c, 0x4d, 0x8e, 0x2f, 0x9a, 0x53 } };
-	// 預設對應名為「佇列清單」的清單（配合 fb2k 現代主題）；沒有同名清單時不會有任何動作，清空即停用
+	// 預設對應名為「佇列清單」的清單（配合 Nocturne for foobar2000 主題）；沒有同名清單時不會有任何動作，清空即停用
 	static constexpr const char* default_playlist_name = "佇列清單";
+	// 主題英文版的佇列清單叫「Queue」：名稱還是預設值時，找不到「佇列清單」就改找它
+	static constexpr const char* default_playlist_name_en = "Queue";
 	cfg_string cfgPlaylistName(guid_cfg_name, default_playlist_name);
+
+	size_t findMirrorPlaylist() {
+		pfc::string8 name = cfgPlaylistName.get();
+		if (name.is_empty()) return SIZE_MAX;
+
+		auto pm = playlist_manager::get();
+		const size_t idx = pm->find_playlist(name.c_str());
+		if (idx != SIZE_MAX || strcmp(name.c_str(), default_playlist_name) != 0) return idx;
+		return pm->find_playlist(default_playlist_name_en);
+	}
 }
 
 namespace {

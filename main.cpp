@@ -3,9 +3,9 @@
 #include <functional>
 #include <vector>
 
-DECLARE_COMPONENT_VERSION("Queue Mirror", "1.2.0",
+DECLARE_COMPONENT_VERSION("Queue Mirror", "1.3.0",
 	"Mirrors the playback queue into a regular playlist that you create yourself.\n"
-	"Enter the playlist name in Preferences > Tools > Queue Mirror.\n"
+	"By default it uses a playlist named \"佇列清單\" or \"Queue\"; enter another name in Preferences > Tools > Queue Mirror.\n"
 	"Sync is queue -> playlist. Deleting items in the playlist also removes them from the queue;\n"
 	"other edits (reorder, add) are not written back and will be reverted on the next sync.");
 
@@ -27,12 +27,10 @@ namespace {
 
 	void syncNow() {
 		if (g_syncing) return;
-		pfc::string8 name = qpl::cfgPlaylistName.get();
-		if (name.is_empty()) return;
+		const size_t idx = qpl::findMirrorPlaylist();
+		if (idx == SIZE_MAX) return;
 
 		auto pm = playlist_manager::get();
-		const size_t idx = pm->find_playlist(name.c_str());
-		if (idx == SIZE_MAX) return;
 		if (pm->playlist_lock_is_present(idx)) return;
 
 		pfc::list_t<t_playback_queue_item> queue;
@@ -76,11 +74,8 @@ namespace {
 		// 使用者在映射清單中刪除曲目時，同步從真正的佇列移除
 		void on_items_removing(t_size playlist, const bit_array& mask, t_size oldCount, t_size) override {
 			if (g_syncing) return;
-			pfc::string8 name = qpl::cfgPlaylistName.get();
-			if (name.is_empty()) return;
-
-			auto pm = playlist_manager::get();
-			if (playlist != pm->find_playlist(name.c_str())) return;
+			const size_t idx = qpl::findMirrorPlaylist();
+			if (idx == SIZE_MAX || playlist != idx) return;
 
 			// callback 內不能直接動佇列，先記下要移除的位置，延後到主執行緒下一輪處理
 			std::vector<size_t> removed;
