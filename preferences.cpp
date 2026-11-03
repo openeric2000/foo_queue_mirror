@@ -13,6 +13,17 @@ namespace qpl {
 	static constexpr const char* default_playlist_name_en = "Queue";
 	cfg_string cfgPlaylistName(guid_cfg_name, default_playlist_name);
 
+	// 設定頁欄位裡顯示的名稱：還是預設值時，顯示實際會對應到的那個清單的名字（中文版主題是「佇列清單」、
+	// 英文版主題沒有「佇列清單」但有「Queue」，就顯示 Queue），兩邊都不用改設定就看得到對的名稱。
+	// 只影響畫面；實際對應哪個清單仍由 findMirrorPlaylist 決定
+	pfc::string8 pageNameFor(const pfc::string8& configured) {
+		if (strcmp(configured.c_str(), default_playlist_name) != 0) return configured;
+		auto pm = playlist_manager::get();
+		if (pm->find_playlist(default_playlist_name) == SIZE_MAX && pm->find_playlist(default_playlist_name_en) != SIZE_MAX)
+			return pfc::string8(default_playlist_name_en);
+		return configured;
+	}
+
 	size_t findMirrorPlaylist() {
 		pfc::string8 name = cfgPlaylistName.get();
 		if (name.is_empty()) return SIZE_MAX;
@@ -37,12 +48,13 @@ namespace {
 			return state;
 		}
 		void apply() override {
-			qpl::cfgPlaylistName = readEdit().c_str();
+			m_shown = readEdit();
+			qpl::cfgPlaylistName = m_shown.c_str();
 			qpl::requestSync();
 			m_callback->on_state_changed();
 		}
 		void reset() override {
-			uSetDlgItemText(*this, IDC_PLAYLIST_NAME, qpl::default_playlist_name);
+			uSetDlgItemText(*this, IDC_PLAYLIST_NAME, qpl::pageNameFor(pfc::string8(qpl::default_playlist_name)).c_str());
 			m_callback->on_state_changed();
 		}
 
@@ -54,7 +66,8 @@ namespace {
 	private:
 		BOOL OnInitDialog(CWindow, LPARAM) {
 			m_dark.AddDialogWithControls(*this);
-			uSetDlgItemText(*this, IDC_PLAYLIST_NAME, qpl::cfgPlaylistName.get().c_str());
+			m_shown = qpl::pageNameFor(qpl::cfgPlaylistName.get());
+			uSetDlgItemText(*this, IDC_PLAYLIST_NAME, m_shown.c_str());
 			return FALSE;
 		}
 		void OnEditChange(UINT, int, CWindow) { m_callback->on_state_changed(); }
@@ -64,9 +77,11 @@ namespace {
 			uGetDlgItemText(*this, IDC_PLAYLIST_NAME, s);
 			return s;
 		}
-		bool hasChanged() { return strcmp(readEdit().c_str(), qpl::cfgPlaylistName.get().c_str()) != 0; }
+		// 跟「一開始顯示的名稱」比，不是跟設定值比：英文版顯示的是 Queue，設定值還是預設的「佇列清單」，不能一打開就算有變更
+		bool hasChanged() { return strcmp(readEdit().c_str(), m_shown.c_str()) != 0; }
 
 		const preferences_page_callback::ptr m_callback;
+		pfc::string8 m_shown;
 		fb2k::CDarkModeHooks m_dark;
 	};
 
