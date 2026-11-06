@@ -3,7 +3,7 @@
 #include <functional>
 #include <vector>
 
-DECLARE_COMPONENT_VERSION("Queue Mirror", "1.3.1",
+DECLARE_COMPONENT_VERSION("Queue Mirror", "1.3.2",
 	"Mirrors the playback queue into a regular playlist that you create yourself.\n"
 	"By default it uses the queue playlist of the Nocturne theme (named \"Queue\" in the English edition, or the Traditional Chinese name used by the Chinese edition); enter another name in Preferences > Tools > Queue Mirror.\n"
 	"Sync is queue -> playlist. Deleting items in the playlist also removes them from the queue;\n"

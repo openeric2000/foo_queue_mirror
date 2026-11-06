@@ -60,6 +60,7 @@ namespace {
 
 		BEGIN_MSG_MAP_EX(CPreferences)
 			MSG_WM_INITDIALOG(OnInitDialog)
+			MSG_WM_SIZE(OnSize)
 			COMMAND_HANDLER_EX(IDC_PLAYLIST_NAME, EN_CHANGE, OnEditChange)
 		END_MSG_MAP()
 
@@ -68,7 +69,37 @@ namespace {
 			m_dark.AddDialogWithControls(*this);
 			m_shown = qpl::pageNameFor(qpl::cfgPlaylistName.get());
 			uSetDlgItemText(*this, IDC_PLAYLIST_NAME, m_shown.c_str());
+			CRect rc;
+			GetClientRect(rc);
+			layoutControls(rc.Width());
 			return FALSE;
+		}
+
+		// 頁面寬度由 foobar2000 的設定頁主機決定，常比範本窄（125% 縮放時約 290 DLU，範本原本 332 DLU 會被切掉右邊）：
+		// 控制項的寬度一律跟著頁面實際寬度走，左右各留 7 DLU，裡面的控制項再縮進 7 DLU
+		void OnSize(UINT, CSize size) { layoutControls(size.cx); }
+
+		void layoutControls(int pageWidth) {
+			if (pageWidth <= 0) return;
+			CRect margins(7, 0, 14, 0);
+			MapDialogRect(margins);
+			const int outer = margins.left, inner = margins.right;
+			const auto place = [this, pageWidth](int id, int x, int rightMargin) {
+				CWindow c = GetDlgItem(id);
+				if (!c) return;
+				CRect r;
+				c.GetWindowRect(r);
+				ScreenToClient(r);
+				const int avail = pageWidth - x - rightMargin;
+				const int w = avail > 40 ? avail : 40; // 不用 std::max：Windows 標頭的 max 巨集會衝突
+				if (r.left == x && r.Width() == w) return;
+				c.SetWindowPos(nullptr, x, r.top, w, r.Height(), SWP_NOZORDER | SWP_NOACTIVATE);
+			};
+			place(IDC_QM_GROUP, outer, outer);
+			place(IDC_PLAYLIST_NAME, inner, inner);
+			place(IDC_QM_HINT_EMPTY, inner, inner);
+			place(IDC_QM_HINT_LONG, outer, outer);
+			RedrawWindow(nullptr, nullptr, RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASE);
 		}
 		void OnEditChange(UINT, int, CWindow) { m_callback->on_state_changed(); }
 

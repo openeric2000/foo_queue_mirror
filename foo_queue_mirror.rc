@@ -3,12 +3,14 @@
 
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
-IDD_PREFERENCES DIALOGEX 0, 0, 332, 120
+// 2026-11-06：範本原本寬 332 DLU，比設定頁主機給的頁面寬度（125% 縮放約 290 DLU）還寬，右邊被切掉；
+// 縮到 290，並給每個控制項識別碼，讓 preferences.cpp 在頁面大小改變時（WM_SIZE）依實際寬度重排
+IDD_PREFERENCES DIALOGEX 0, 0, 290, 120
 STYLE DS_SETFONT | WS_CHILD
 FONT 8, "Microsoft Sans Serif", 400, 0, 0x0
 BEGIN
-    GROUPBOX        "Queue playlist name",IDC_STATIC,7,7,318,50
-    EDITTEXT        IDC_PLAYLIST_NAME,14,20,304,14,ES_AUTOHSCROLL
-    LTEXT           "Leave empty to disable.",IDC_STATIC,14,40,304,8
-    LTEXT           "Type a playlist name here, then create a playlist with the same name. That playlist will mirror the playback queue.",IDC_STATIC,7,66,318,24
+    GROUPBOX        "Queue playlist name",IDC_QM_GROUP,7,7,276,50
+    EDITTEXT        IDC_PLAYLIST_NAME,14,20,262,14,ES_AUTOHSCROLL
+    LTEXT           "Leave empty to disable.",IDC_QM_HINT_EMPTY,14,40,262,8
+    LTEXT           "Type a playlist name here, then create a playlist with the same name. That playlist will mirror the playback queue.",IDC_QM_HINT_LONG,7,66,276,36
 END
